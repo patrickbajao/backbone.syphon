@@ -202,11 +202,15 @@ var assignKeyValue = function(obj, keychain, value) {
 
   // if it's the last key in the chain, assign the value directly
   if (keychain.length === 0) {
-    if (_.isArray(obj[key])) {
-      obj[key].push(value);
-    } else {
-      obj[key] = value;
-    }
+    value = _.isArray(value) ? value : [value];
+
+    _.each(value, function(v) {
+      if (_.isArray(obj[key])) {
+        obj[key].push(v);
+      } else {
+        obj[key] = v;
+      }
+    });
   }
 
   // recursive parsing of the array, depth-first

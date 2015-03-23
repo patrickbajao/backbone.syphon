@@ -114,8 +114,35 @@ describe('serializing a form', function() {
       this.result = Backbone.Syphon.serialize(this.view);
     });
 
-    it('should have the textarea\'s value', function() {
+    it('should return the selected option value', function() {
       expect(this.result.foo).to.equal('bar');
+    });
+  });
+
+  describe('when serializing a multi-select box', function() {
+    beforeEach(function() {
+      this.View = Backbone.View.extend({
+        render: function() {
+          this.$el.html(
+              '<form>' +
+              '<select name="foo[]" multiple="multiple">' +
+              '<option value="bar1" selected="selected">Bar 1</option>' +
+              '<option value="bar2">Bar 2</option>' +
+              '<option value="bar3" selected="selected">Bar 3</option>' +
+              '</select>' +
+              '</form>'
+          );
+        }
+      });
+
+      this.view = new this.View();
+      this.view.render();
+
+      this.result = Backbone.Syphon.serialize(this.view);
+    });
+
+    it('should return the selected options values', function() {
+      expect(this.result.foo).to.deep.equal(['bar1', 'bar3']);
     });
   });
 
