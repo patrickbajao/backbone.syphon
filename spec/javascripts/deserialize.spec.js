@@ -96,6 +96,34 @@ describe('deserializing an object into a form', function() {
     });
   });
 
+  describe('when deserializing into a multi-select box', function() {
+    beforeEach(function() {
+      this.View = Backbone.View.extend({
+        render: function() {
+          this.$el.html(
+              '<form>' +
+              '<select name="foo[]" multiple="multiple">' +
+              '<option value="bar1">Bar 1</option>' +
+              '<option value="bar2">Bar 2</option>' +
+              '<option value="bar3">Bar 3</option>' +
+              '</select>' +
+              '</form>'
+          );
+        }
+      });
+
+      this.view = new this.View();
+      this.view.render();
+
+      Backbone.Syphon.deserialize(this.view, {foo: ['bar1', 'bar2']});
+      this.result = this.view.$('select').val();
+    });
+
+    it('should select the options corresponding to the values in the given object', function() {
+      expect(this.result).to.deep.equal(['bar1', 'bar2']);
+    });
+  });
+
   describe('when deserializing into a checkbox', function() {
     beforeEach(function() {
       this.View = Backbone.View.extend({
